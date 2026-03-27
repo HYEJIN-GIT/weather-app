@@ -1,8 +1,8 @@
 /* App.css */
-
+@import url("https://cdn.jsdelivr.net/gh/orioncactus/pretendard/dist/web/static/pretendard.css");
 /* 전체 배경 */
 body {
-  font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+  font-family: 'Pretendard', sans-serif;
   background: linear-gradient(to bottom, #87ceeb, #f0f8ff);
   margin: 0;
   padding: 0;
@@ -23,6 +23,12 @@ body {
   color: #444;
 }
 
+.waiting{
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  height: 61vh;
+}
 /* 카드 전체 */
 .weather-details {
   display: grid;
@@ -140,3 +146,46 @@ body {
   transform: translateY(-2px);
 
 }
+
+
+/*  모바일 버전 */
+@media (max-width: 480px) {
+
+  .weather-box {
+  width: 100%;
+  max-width: 350px;
+  padding: 25px 20px;
+  }
+  
+  
+  
+  .weather-box h1 {
+  font-size: 42px;
+  }
+  
+  .weather-box h3 {
+  font-size: 18px;
+  }
+  
+  .detail-card h4 {
+  font-size: 18px;
+  }
+  
+  .search-box {
+
+  align-items: center;
+  margin: 20px;
+  }
+  
+  .search-input {
+  width: 100%;
+  }
+  
+  .search-btn {
+  width: 40%;
+  }
+  
+  .button-area button {
+  display: none;
+  }
+  }

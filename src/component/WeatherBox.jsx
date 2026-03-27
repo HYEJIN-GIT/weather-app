@@ -68,7 +68,10 @@ const WeatherBox = ({weather}) => {
   
       </div>
     ) : (
-      <div>날씨 정보 가져오는 중...</div>
+      <div className='waiting'>
+ <h3>날씨 정보 가져오는 중...</h3>
+      </div>
+     
     )}
   </div>
   )
