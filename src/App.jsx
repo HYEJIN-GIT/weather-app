@@ -71,7 +71,7 @@ const getWeatherByCurrentForecast = async (lat,lon) =>{
   }))
   setForest(temps)
   } catch (error) {
-    alert(error.message)
+   alert(error.message)
   }
   
 }
