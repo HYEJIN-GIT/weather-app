@@ -138,7 +138,7 @@ const getWeatherByCityForecast = async()=>{
     setForest(temps)
 
   } catch (error) {
-    alert(error.message)
+    console.log(error.message)
   }
  
 }
@@ -146,7 +146,7 @@ const getWeatherByCityForecast = async()=>{
 const getAirPollution= async (lat,lon)=>{
   try {
     
-   let url = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+   let url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
    const response = await fetch(url)
    if(!response.ok){
     throw new Error("미세번지 정보 불러오기 실패")
@@ -158,7 +158,7 @@ const getAirPollution= async (lat,lon)=>{
    setPollution(airPollution)
  
   } catch (error) {
-    alert(error.message)
+    console.log(error.message)
   }
 }
 
