@@ -16,12 +16,10 @@ import WeatherSearch from './component/WeatherSearch';
 
 const API_KEY = import.meta.env.VITE_API_KEY
 
-
-
-
-
 function App() {
   const [weather,setWeather] = useState(null)
+  const [forest,setForest] = useState(null)
+  const [pollution,setPollution] = useState(null)
   const cities = [
     "Tokyo","New york","Paris","seoul"
   ]
@@ -34,13 +32,12 @@ function App() {
   
     if(city === "" ||city === "current"){
       getCurrentLocation()
+  
     }
     else {
-
       getWeatherByCity()
-    }
-    
-   
+      getWeatherByCityForecast()
+    }  
   },[city])
 
 
@@ -51,55 +48,138 @@ function App() {
     let lat = position.coords.latitude;
     let lon = position.coords.longitude;
     getWeatherByCurrentLocation(lat,lon)
+    getWeatherByCurrentForecast(lat,lon)
+    getAirPollution(lat,lon)
 
 
    })
   }
+
+  //현재 날씨 정보 3시간 마다 보여주기
+const getWeatherByCurrentForecast = async (lat,lon) =>{
+  try {
+    let url =`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}&lang=kr`
+  const response = await fetch(url)
+  if(!response.ok){
+    throw new Error("예보 불러오기 실패")
+  }
+  const data = await response.json()
+  const temps = data.list.map(item => ({
+    
+    time: item.dt_txt.split(' ')[1].slice(0,2),
+    temp: Math.floor(item.main.temp)
+  }))
+  setForest(temps)
+  } catch (error) {
+    alert(error.message)
+  }
+  
+}
+
+
+//현재 날씨 보여주기
 const getWeatherByCurrentLocation = async (lat,lon)=>{
 
-  let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}`
-  setLoading(true)
+  try {
+    setLoading(true)
+    let url = `https://api.openweathermap.org/data/2.5/weather?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}&lang=kr` 
   const response = await fetch(url)
+  if(!response.ok){
+    throw new Error("현재 날씨 불러오기 실패")
+  }
   const data = await response.json()
   setWeather(data)
-  console.log(data)
-  setLoading(false)
+ 
+  } catch (error) {
+    alert(error.message)
+  }finally{
+    setLoading(false)
+  }
+  
 }
 
+
+//도시 날씨 정보 보여주기
 const getWeatherByCity = async ()=>{
-  let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}`
-  setLoading(true)
-  const response = await fetch(url)
-  const data = await response.json()
-  setWeather(data)
-  setLoading(false)
+  try {
+    
+    let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}&lang=kr&cnt`
 
+    const response = await fetch(url)
+    if(!response.ok){
+      throw new Error("도시 정보 불러오기 실패")
+    }
+    const data = await response.json()
+    setWeather(data)
+    const lat = data.coord.lat
+    const lon = data.coord.lon
+    getAirPollution(lat, lon)
+
+  } catch (error) {
+    alert(error.message)
+  }
+  
+ 
 }
+//도시별 3시간 마다 날씨 보여주기
+const getWeatherByCityForecast = async()=>{
+  try {
+    let url =`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${API_KEY}&lang=kr`
+
+    const response = await fetch(url)
+    if(!response.ok){
+      throw new Error("예보 불러오기 실패")
+    }
+    const data = await response.json()
+    const temps = data.list.map(item => ({
+      time: item.dt_txt.split(' ')[1].slice(0,2),
+      temp: Math.floor(item.main.temp)
+    }))
+    setForest(temps)
+
+  } catch (error) {
+    alert(error.message)
+  }
+ 
+}
+
+const getAirPollution= async (lat,lon)=>{
+  try {
+    
+   let url = `http://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
+   const response = await fetch(url)
+   if(!response.ok){
+    throw new Error("미세번지 정보 불러오기 실패")
+  }
+   const data = await response.json()
+   const airPollution = data.list.map(item=>({
+        aqi :item.main.aqi
+      }))
+   setPollution(airPollution)
+ 
+  } catch (error) {
+    alert(error.message)
+  }
+}
+
+
 
   return (
     <div>
-<WeatherSearch setCity={setCity}></WeatherSearch>
-
+          <WeatherSearch setCity={setCity}></WeatherSearch>
+          <WeatherButton cities={cities} setCity={setCity} city={city}></WeatherButton>
 
       {
-      
         loading? 
         <div className='loading-location'>
         <ClipLoader loading={loading} size={100}></ClipLoader>
         </div>
 
         :
-        <div>
-
-
-<WeatherBox weather ={weather}></WeatherBox>
-<WeatherButton cities={cities} setCity={setCity} city={city}></WeatherButton>
-
+        <div className='weather-box-area'>
+        <WeatherBox weather ={weather} forest={forest} pollution={pollution}></WeatherBox>
         </div>
-        
       }
-    
-     
     </div>
   )
 }

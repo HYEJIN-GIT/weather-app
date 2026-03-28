@@ -9,7 +9,7 @@ const WeatherButton = ({cities,setCity,city}) => {
     <button 
     className={city === "current"?"active":""}
       onClick={()=>{setCity("current")}}>
-      현재위치
+      Current Location
     </button>
 
     {cities.map((item,index)=>(
