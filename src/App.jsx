@@ -58,6 +58,7 @@ function App() {
   //현재 날씨 정보 3시간 마다 보여주기
 const getWeatherByCurrentForecast = async (lat,lon) =>{
   try {
+    setLoading(true)
     let url =`https://api.openweathermap.org/data/2.5/forecast?lat=${lat}&lon=${lon}&units=metric&appid=${API_KEY}&lang=kr`
   const response = await fetch(url)
   if(!response.ok){
@@ -72,6 +73,8 @@ const getWeatherByCurrentForecast = async (lat,lon) =>{
   setForest(temps)
   } catch (error) {
    alert(error.message)
+  }finally{
+    setLoading(false)
   }
   
 }
@@ -102,7 +105,7 @@ const getWeatherByCurrentLocation = async (lat,lon)=>{
 //도시 날씨 정보 보여주기
 const getWeatherByCity = async ()=>{
   try {
-    
+    setLoading(true)
     let url = `https://api.openweathermap.org/data/2.5/weather?q=${city}&units=metric&appid=${API_KEY}&lang=kr&cnt`
 
     const response = await fetch(url)
@@ -117,6 +120,8 @@ const getWeatherByCity = async ()=>{
 
   } catch (error) {
     alert(error.message)
+  }finally{
+    setLoading(false)
   }
   
  
@@ -124,6 +129,7 @@ const getWeatherByCity = async ()=>{
 //도시별 3시간 마다 날씨 보여주기
 const getWeatherByCityForecast = async()=>{
   try {
+    setLoading(true)
     let url =`https://api.openweathermap.org/data/2.5/forecast?q=${city}&units=metric&appid=${API_KEY}&lang=kr`
 
     const response = await fetch(url)
@@ -139,13 +145,15 @@ const getWeatherByCityForecast = async()=>{
 
   } catch (error) {
     console.log(error.message)
+  }finally{
+    setLoading(false)
   }
  
 }
 
 const getAirPollution= async (lat,lon)=>{
   try {
-    
+    setLoading(true)
    let url = `https://api.openweathermap.org/data/2.5/air_pollution?lat=${lat}&lon=${lon}&appid=${API_KEY}`
    const response = await fetch(url)
    if(!response.ok){
@@ -159,6 +167,8 @@ const getAirPollution= async (lat,lon)=>{
  
   } catch (error) {
     console.log(error.message)
+  }finally{
+    setLoading(false)
   }
 }
 
